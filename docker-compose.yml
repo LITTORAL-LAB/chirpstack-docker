@@ -13,7 +13,6 @@ services:
       - MQTT_BROKER_HOST=mosquitto
       - REDIS_HOST=redis
       - POSTGRESQL_HOST=postgres
-      - POSTGRESQL_PORT=5432
     ports:
       - "8081:8080"
 
@@ -56,18 +55,18 @@ services:
     restart: unless-stopped
     volumes:
       - ./configuration/postgresql/initdb:/docker-entrypoint-initdb.d
-      - postgresqldata_new:/var/lib/postgresql/data
+      - postgresqldata:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=chirpstack_new
-      - POSTGRES_PASSWORD=chirpstack_new
-      - POSTGRES_DB=chirpstack_new
+      - POSTGRES_USER=chirpstack
+      - POSTGRES_PASSWORD=chirpstack
+      - POSTGRES_DB=chirpstack
 
   redis:
     image: redis:7-alpine
     restart: unless-stopped
     command: redis-server --save 300 1 --save 60 100 --appendonly no
     volumes:
-      - redisdata_new:/data
+      - redisdata:/data
 
   mosquitto:
     image: eclipse-mosquitto:2
@@ -76,9 +75,7 @@ services:
       - "1884:1883"
     volumes: 
       - ./configuration/mosquitto/config/:/mosquitto/config/
-    # Configuração mínima para evitar conflitos
-    command: mosquitto -c /mosquitto/config/mosquitto.conf
 
 volumes:
-  postgresqldata_new:
-  redisdata_new:
+  postgresqldata:
+  redisdata:
